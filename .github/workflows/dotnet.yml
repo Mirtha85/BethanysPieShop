@@ -26,3 +26,15 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+
+    # containerization steps
+    - name: Build Docker image
+      run: |
+        docker build -t bethanyspieshop:latest .
+    - name: Save Docker image to artifact
+      run: |
+        docker save bethanyspieshop:latest -o image.tar
+    - uses: actions/upload-artifact@v3
+      with:
+        name: docker-image
+        path: image.tar
