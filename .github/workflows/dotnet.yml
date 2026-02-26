@@ -34,7 +34,7 @@ jobs:
     - name: Save Docker image to artifact
       run: |
         docker save bethanyspieshop:latest -o image.tar
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: docker-image
         path: image.tar
