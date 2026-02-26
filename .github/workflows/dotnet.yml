@@ -39,6 +39,16 @@ jobs:
         name: docker-image
         path: image.tar
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: docker-image
+
     # deploy to remote server over SSH
     # the workflow uses a **private key** stored in the SSH_PRIVATE_KEY secret
     # (PEM format). the **public key** corresponding to that private key must
@@ -50,9 +60,6 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-    - name: Test SSH connection
-      run: |
-        ssh -vvv -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} exit
     - name: Copy image to target host
       run: |
         scp -o StrictHostKeyChecking=no image.tar \
