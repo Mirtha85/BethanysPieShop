@@ -52,7 +52,7 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
     - name: Test SSH connection
       run: |
-        ssh -vvv -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} exit
+        ssh -vvv -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} exit
     - name: Copy image to target host
       run: |
         scp -o StrictHostKeyChecking=no image.tar \
