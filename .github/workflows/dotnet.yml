@@ -40,12 +40,19 @@ jobs:
         path: image.tar
 
     # deploy to remote server over SSH
+    # the workflow uses a **private key** stored in the SSH_PRIVATE_KEY secret
+    # (PEM format). the **public key** corresponding to that private key must
+    # already be present in the remote host's ~/.ssh/authorized_keys file.
+    # we don't copy the private key to the server – the runner uses it locally
+    # to authenticate when calling `ssh` / `scp`.
     - name: Set up SSH key
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-    - name: Copy image to target host
+    - name: Copy image to target host    - name: Copy image to target host
+      run: |
+        ssh -vvv -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} exit
       run: |
         scp -o StrictHostKeyChecking=no image.tar \
           ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/image.tar
