@@ -50,9 +50,10 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-    - name: Copy image to target host    - name: Copy image to target host
+    - name: Test SSH connection
       run: |
         ssh -vvv -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} exit
+    - name: Copy image to target host
       run: |
         scp -o StrictHostKeyChecking=no image.tar \
           ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/image.tar
