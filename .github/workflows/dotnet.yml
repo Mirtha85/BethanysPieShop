@@ -38,3 +38,22 @@ jobs:
       with:
         name: docker-image
         path: image.tar
+
+    # deploy to remote server over SSH
+    - name: Set up SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+    - name: Copy image to target host
+      run: |
+        scp -o StrictHostKeyChecking=no image.tar \
+          ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/image.tar
+    - name: Load image and run container on host
+      run: |
+        ssh -o StrictHostKeyChecking=no \
+          ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<'EOF'
+          docker load < /tmp/image.tar
+          docker rm -f bethanyspieshop_mirtha || true
+          docker run -d --name bethanyspieshop_mirtha -p 8500:5010 bethanyspieshop:latest
+        EOF
