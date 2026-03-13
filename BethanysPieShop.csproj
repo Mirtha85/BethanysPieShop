@@ -18,4 +18,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="BethanysPie.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
