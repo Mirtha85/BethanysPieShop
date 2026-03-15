@@ -22,7 +22,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
-app.MapDefaultControllerRoute();
+app.MapDefaultControllerRoute();//{controller=Home}/{action=Index}/{id?}
+
+
+// app.MapControllerRoute(
+//     name: "default",
+//     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 DbInitializer.Seed(app);
 app.Run();
 
