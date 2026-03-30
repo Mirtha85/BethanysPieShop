@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace BethanysPieShop.Models
 {
     public static class DbInitializer
@@ -5,6 +7,8 @@ namespace BethanysPieShop.Models
         public static void Seed(IApplicationBuilder applicationBuilder)
         {
             BethanysPieShopDbContext context = applicationBuilder.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<BethanysPieShopDbContext>();
+
+            context.Database.Migrate();
 
             if (!context.Categories.Any())
             {
